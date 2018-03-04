@@ -8,5 +8,9 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 {
 	public abstract class NodeComponent
 	{
+		internal object ToXml()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
