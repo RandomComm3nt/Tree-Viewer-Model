@@ -7,10 +7,20 @@ using System.Xml.Linq;
 
 namespace Assets.Scripts.Model.Data.TreeViewer
 {
-	public abstract class TreeNode
+	public class TreeNode
 	{
 		private string name = "TestName";
 		private List<NodeComponent> components = new List<NodeComponent>();
+
+		public TreeNode()
+		{
+
+		}
+
+		public TreeNode(XElement element)
+		{
+			FromXML(element);
+		}
 
 		public List<NodeComponent> Components
 		{
@@ -41,6 +51,16 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			}
 
 			return node;
+		}
+
+		public void FromXML(XElement node)
+		{
+			name = node.Attribute("Name").Value;
+
+			components = node
+				.Elements("Component")
+				.Select(c => NodeComponent.FromXml(c))
+				.ToList();
 		}
 	}
 }
