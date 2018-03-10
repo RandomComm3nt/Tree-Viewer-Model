@@ -35,9 +35,24 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			}
 		}
 
-		public void AddComponent(Type T)
+		public string Name
 		{
-			components.Add((NodeComponent)Activator.CreateInstance(T));
+			get
+			{
+				return name;
+			}
+
+			set
+			{
+				name = value;
+			}
+		}
+
+		public NodeComponent AddComponent(Type T)
+		{
+			NodeComponent c = (NodeComponent)Activator.CreateInstance(T);
+			components.Add(c);
+			return c;
 		}
 
 		public XElement ToXml()
