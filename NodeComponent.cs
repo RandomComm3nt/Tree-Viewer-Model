@@ -19,7 +19,10 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			{
 				if (componentMap == null)
 				{
-					componentMap = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).ToDictionary(t => t.Name, t => t);
+					componentMap = AppDomain.CurrentDomain.GetAssemblies()
+						.SelectMany(a => a.GetTypes())
+						.Where(t => t.IsSubclassOf(typeof(NodeComponent)))
+						.ToDictionary(t => t.Name, t => t);
 				}
 				return componentMap;
 			}
@@ -29,7 +32,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				componentMap = value;
 			}
 		}
-
+		//dfsd
 		public static Dictionary<Type, List<FieldInfo>> ComponentFields
 		{
 			get
@@ -38,7 +41,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				{
 					componentFields = ComponentMap
 						.Values
-						.ToDictionary(t => t, t => t.GetFields()
+						.ToDictionary(t => t, t => t.GetFields(BindingFlags.NonPublic | BindingFlags.Instance)
 							.Where(f => f.GetCustomAttribute(typeof(ComponentPropertyAttribute)) != null)
 							.ToList());
 				}
@@ -59,7 +62,10 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			{
 				foreach (FieldInfo fi in ComponentFields[GetType()])
 				{
-					// write component 
+					XElement propertyNode = new XElement("Property");
+					propertyNode.Add(new XElement("Key", fi.Name));
+					propertyNode.Add(new XElement("Value", fi.GetValue(this)));
+					node.Add(propertyNode);
 				}
 			}
 			return node;
@@ -77,8 +83,9 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				}
 				if (ComponentFields.ContainsKey(T))
 				{
-					foreach (FieldInfo fi in ComponentFields[T])
+					foreach (XElement p in component.Elements("Property"))
 					{
+						// FieldInfo fi in ComponentFields[T]
 						// read component
 					}
 				}
