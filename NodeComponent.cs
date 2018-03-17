@@ -32,7 +32,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				componentMap = value;
 			}
 		}
-		//dfsd
+		
 		public static Dictionary<Type, List<FieldInfo>> ComponentFields
 		{
 			get
