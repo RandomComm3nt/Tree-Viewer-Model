@@ -22,7 +22,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 					componentMap = AppDomain.CurrentDomain.GetAssemblies()
 						.SelectMany(a => a.GetTypes())
 						.Where(t => t.IsSubclassOf(typeof(NodeComponent)))
-						.ToDictionary(t => t.Name, t => t);
+						.ToDictionary(t => t.ToString(), t => t);
 				}
 				return componentMap;
 			}
