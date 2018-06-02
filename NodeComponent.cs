@@ -83,10 +83,16 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				}
 				if (ComponentFields.ContainsKey(T))
 				{
+					// for each Property element in xml, try to find the matching component variable
 					foreach (XElement p in component.Elements("Property"))
 					{
-						// FieldInfo fi in ComponentFields[T]
-						// read component
+						foreach (FieldInfo fi in ComponentFields[T])
+						{
+							if (p.Element("Key").Value == fi.Name)
+							{
+								fi.SetValue(o, p.Element("Value").Value);
+							}
+						}
 					}
 				}
 
