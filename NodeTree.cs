@@ -55,6 +55,26 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			nodes.Add(node);
 		}
 
+		/// <summary>
+		/// Deletes a node and any children of that node
+		/// </summary>
+		/// <param name="node">The parent node to delete</param>
+		/// <returns>A list of the nodes deleted</returns>
+		public List<TreeNode> DeleteNode(TreeNode node)
+		{
+			List<TreeNode> deletedNodes = new List<TreeNode> { node };
+			foreach (TreeNode n in node
+				.Components
+				.SelectMany(c => c.NodeLinks)
+				.Where(l => true /*should filter on type to make sure component is only parent*/)
+				.Select(l => l.childNode))
+			{
+				deletedNodes.AddRange(DeleteNode(n));
+			}
+			nodes.Remove(node);
+			return deletedNodes;
+		}
+
 		public void Save(string path)
 		{
 			XDocument document = new XDocument();

@@ -1,15 +1,18 @@
-﻿using System;
+﻿
+#region Using Statements
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+#endregion
 
 namespace Assets.Scripts.Model.Data.TreeViewer
 {
 	public abstract class NodeComponent
 	{
+		#region Static
+
 		private static Dictionary<string, Type> componentMap;
 		private static Dictionary<Type, List<FieldInfo>> componentFields;
 
@@ -54,6 +57,33 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			}
 		}
 
+		#endregion
+
+		#region Fields
+
+		private List<ComponentNodeLink> nodeLinks;
+
+		#endregion
+
+		#region Properties
+
+		public List<ComponentNodeLink> NodeLinks
+		{
+			get
+			{
+				return nodeLinks;
+			}
+		}
+
+		#endregion
+
+		#region Methods
+
+		public NodeComponent()
+		{
+			nodeLinks = new List<ComponentNodeLink>();
+		}
+
 		public XElement ToXml()
 		{
 			XElement node = new XElement("Component");
@@ -68,6 +98,12 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 					node.Add(propertyNode);
 				}
 			}
+
+			foreach (ComponentNodeLink l in nodeLinks)
+			{
+				node.Add(l.ToXml());
+			}
+
 			return node;
 		}
 
@@ -96,6 +132,12 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 					}
 				}
 
+				if (component.Element("ComponentNodeLink") != null)
+					(o as NodeComponent).nodeLinks = component
+						.Elements("ComponentNodeLink")
+						.Select(e => new ComponentNodeLink(e))
+						.ToList();
+
 				return o as NodeComponent;
 			}
 			else
@@ -103,5 +145,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				throw new Exception("Attempt to deserialize XML failed. Component of type " + component.Element("ComponentName").Value + " could not be found in component map");
 			}
 		}
+
+		#endregion
 	}
 }

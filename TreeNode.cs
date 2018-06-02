@@ -1,9 +1,10 @@
-﻿using System;
+﻿
+#region Using Statements
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+#endregion
 
 namespace Assets.Scripts.Model.Data.TreeViewer
 {
@@ -12,15 +13,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 		private string name = "TestName";
 		private List<NodeComponent> components = new List<NodeComponent>();
 
-		public TreeNode()
-		{
-
-		}
-
-		public TreeNode(XElement element)
-		{
-			FromXML(element);
-		}
+		#region Properties
 
 		public List<NodeComponent> Components
 		{
@@ -46,6 +39,18 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 			{
 				name = value;
 			}
+		}
+
+		#endregion
+
+		#region Methods
+
+		public TreeNode()
+		{ }
+
+		public TreeNode(XElement element)
+		{
+			FromXML(element);
 		}
 
 		public NodeComponent AddComponent(Type T)
@@ -77,5 +82,7 @@ namespace Assets.Scripts.Model.Data.TreeViewer
 				.Select(c => NodeComponent.FromXml(c))
 				.ToList();
 		}
+
+		#endregion
 	}
 }
